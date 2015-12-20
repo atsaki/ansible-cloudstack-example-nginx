@@ -1,0 +1,29 @@
+---
+
+- hosts: nginx
+  gather_facts: no
+  pre_tasks:
+    - include: set_ansible_ssh_host.yml
+  tasks:
+    - name: "Nginxをインストール(Ubuntu)"
+      apt:
+        name: "nginx"
+        update_cache: yes
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: "EPELをインストール(CentOS)"
+      yum:
+        name: "epel-release"
+      when: ansible_distribution == 'CentOS'
+
+    - name: "Nginxをインストール(CentOS)"
+      yum:
+        name: "nginx"
+      when: ansible_distribution == 'CentOS'
+
+    - name: "Nginxを起動"
+      service:
+        name: "nginx"
+        enabled: yes
+        state: started
+
